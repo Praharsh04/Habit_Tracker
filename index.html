@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HabitFlow — Planner Edition</title>
+    <title>HabitFlow — Premium Planner</title>
     <!-- CDN Imports -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -12,29 +12,22 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Instrument+Sans:wght@400;500;600&family=DM+Mono&display=swap" rel="stylesheet"/>
     <style>
         :root {
-            /* Planner Palette */
-            --bg-page: #0B2E33;
-            --bg-card: #4F7C82;
-            --primary: #93B1B5;
-            --accent: #B8E3E9;
-            --text-main: #ffffff;
-            --text-muted: #B8E3E9;
-            --border: #93B1B5;
+            /* Cohesive Minimal Palette */
+            --bg-page: #30364F;
+            --surface: #ACBAC4;
+            --primary: #E1D9BC;
+            --accent: #F0F0DB;
             
-            /* Accents per Week - adapted to new palette */
-            --w1-bg: var(--bg-card);
-            --w1-accent: var(--accent);
-            --w2-bg: var(--bg-card);
-            --w2-accent: var(--accent);
-            --w3-bg: var(--bg-card);
-            --w3-accent: var(--accent);
-            --w4-bg: var(--bg-card);
-            --w4-accent: var(--accent);
-            --w5-bg: var(--bg-card);
-            --w5-accent: var(--accent);
+            --text-main: #F0F0DB;
+            --text-muted: #30364F; /* Dark text on light surface */
+            --border: rgba(48, 54, 79, 0.15);
             
-            --radius: 4px;
-            --transition: 0.2s ease;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            
+            --radius-lg: 16px;
+            --radius-md: 8px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -48,6 +41,10 @@
             background-color: var(--bg-page);
             color: var(--text-main);
             font-family: 'Instrument Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 2rem;
         }
 
@@ -63,44 +60,64 @@
 
         /* Layout Grid */
         .app-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 1550px;
             display: grid;
-            grid-template-columns: 240px 1fr 320px;
-            gap: 1.5rem;
+            grid-template-columns: 280px 1fr 340px;
+            gap: 2rem;
+            align-items: start;
         }
 
-        /* Sidebar Left */
-        .sidebar-left {
+        /* Sidebar Panels */
+        .sidebar-left, .sidebar-right {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .month-header h1 {
-            font-size: 4rem;
-            line-height: 1;
+            font-size: 5rem;
+            line-height: 0.8;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .premium-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            color: var(--bg-page); /* Dark text for cards */
+        }
+
+        .premium-card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
         }
 
         .quote-card {
-            background: var(--bg-card);
-            padding: 2rem;
-            border: 1px solid var(--border);
+            background: var(--surface);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .quote-card h2 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             line-height: 0.9;
-            color: var(--accent);
+            color: var(--bg-page);
             margin-bottom: 2rem;
+            letter-spacing: -0.05em;
         }
 
         /* Main Content */
         .main-content {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .top-stats-row {
@@ -110,25 +127,24 @@
         }
 
         .area-chart-container {
-            background: var(--bg-card);
-            height: 150px;
-            position: relative;
-            border-radius: var(--radius);
-            overflow: hidden;
+            background: var(--surface);
+            height: 180px;
+            border-radius: var(--radius-lg);
             border: 1px solid var(--border);
-        }
-
-        .circular-stats-group {
-            display: flex;
-            gap: 1rem;
+            overflow: hidden;
         }
 
         .stat-circle-card {
-            background: var(--bg-card);
-            padding: 1rem;
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
             text-align: center;
-            width: 140px;
+            width: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            color: var(--bg-page);
         }
 
         /* Weekly Summary Row */
@@ -139,179 +155,213 @@
         }
 
         .week-card {
-            background: var(--bg-card);
-            padding: 1rem;
+            background: var(--surface);
+            border-radius: var(--radius-md);
             border: 1px solid var(--border);
+            padding: 1.25rem;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--bg-page);
         }
 
         .week-bar-chart {
             display: flex;
             align-items: flex-end;
-            gap: 2px;
-            height: 60px;
-            margin: 1rem 0;
+            gap: 3px;
+            height: 40px;
+            width: 100%;
         }
 
         .week-bar {
             flex: 1;
             background: var(--primary);
+            opacity: 0.6;
             border-radius: 2px 2px 0 0;
+            transition: var(--transition);
         }
 
-        /* Main Log Grid */
+        .week-card:hover .week-bar {
+            opacity: 1;
+            background: var(--bg-page);
+        }
+
+        /* Log Grid Container */
         .log-grid-container {
-            background: var(--bg-card);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
             border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            color: var(--bg-page);
+        }
+
+        .log-scroll-area {
             overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
         }
 
         .log-grid {
             display: grid;
-            grid-template-columns: 180px repeat(31, 30px);
-            border-collapse: collapse;
+            grid-template-columns: 220px repeat(31, 35px);
         }
 
         .log-cell {
-            border: 1px solid var(--border);
-            height: 30px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
         }
 
-        .log-header {
-            background: var(--bg-card);
+        .log-header-row {
+            background: rgba(48, 54, 79, 0.05);
             font-weight: 600;
         }
 
-        .day-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4px;
+        .habit-name-cell {
+            justify-content: flex-start;
+            padding: 0 1.25rem;
+            font-weight: 500;
+            background: var(--surface);
+            position: sticky;
+            left: 0;
+            z-index: 10;
         }
 
-        .checkbox {
-            width: 18px;
-            height: 18px;
-            border: 1px solid var(--border);
+        /* Checkbox Design */
+        .check-wrapper {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--bg-page);
+            border-radius: 6px;
             cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .checkbox.checked {
-            background: var(--w1-accent);
-            border-color: var(--w1-accent);
-            position: relative;
-        }
-
-        .checkbox.checked::after {
-            content: '✓';
-            color: var(--bg-page);
-            font-size: 12px;
-            font-weight: 900;
-        }
-
-        /* Sidebar Right */
-        .sidebar-right {
             display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .panel-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 1rem;
+        .check-wrapper.active {
+            background: var(--accent);
+            border-color: var(--bg-page);
+            transform: scale(1.1);
         }
 
+        .check-wrapper.active::after {
+            content: "";
+            width: 6px;
+            height: 10px;
+            border: solid var(--bg-page);
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+        }
+
+        /* Sidebar Right Tables */
         .panel-title {
-            text-align: center;
-            padding: 0.5rem;
-            background: var(--primary);
-            color: var(--bg-page);
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
+            padding: 0.75rem;
+            background: var(--bg-page);
+            color: var(--accent);
+            border-radius: var(--radius-md);
+            margin-bottom: 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 700;
             letter-spacing: 0.1em;
+            text-align: center;
             text-transform: uppercase;
-            font-weight: 600;
         }
 
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
         }
 
-        .data-table th, .data-table td {
-            padding: 0.5rem;
+        .data-table th {
             text-align: left;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--bg-page);
+            opacity: 0.6;
+            padding: 0.5rem;
             border-bottom: 1px solid var(--border);
         }
 
-        .progress-mini-bar {
-            height: 8px;
-            background: var(--bg-page);
-            border-radius: 4px;
+        .data-table td {
+            padding: 0.75rem 0.5rem;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .progress-track {
+            height: 6px;
+            background: rgba(48, 54, 79, 0.1);
+            border-radius: 3px;
             overflow: hidden;
+            width: 80px;
         }
 
-        .progress-mini-fill {
+        .progress-fill {
             height: 100%;
-            background: var(--w1-accent);
+            background: var(--bg-page);
+            border-radius: 3px;
         }
 
-        /* Controls */
         .btn-add {
-            border: 1px dashed var(--border);
-            padding: 0.5rem;
+            padding: 1rem;
             text-align: center;
             cursor: pointer;
-            color: var(--text-muted);
-            margin-top: 1rem;
+            color: var(--bg-page);
+            border: 1px dashed var(--bg-page);
+            margin: 1.5rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            transition: var(--transition);
         }
 
         .btn-add:hover {
             background: var(--primary);
-            color: var(--bg-page);
+            border-color: var(--bg-page);
         }
 
-        /* Helpers for Week Colors */
-        .bg-w1 { background-color: var(--w1-bg); }
-        .bg-w2 { background-color: var(--w2-bg); }
-        .bg-w3 { background-color: var(--w3-bg); }
-        .bg-w4 { background-color: var(--w4-bg); }
-        .bg-w5 { background-color: var(--w5-bg); }
-        
-        .accent-w1 { color: var(--w1-accent); border-color: var(--w1-accent); }
-        .accent-w2 { color: var(--w2-accent); border-color: var(--w2-accent); }
-        .accent-w3 { color: var(--w3-accent); border-color: var(--w3-accent); }
-        .accent-w4 { color: var(--w4-accent); border-color: var(--w4-accent); }
-        .accent-w5 { color: var(--w5-accent); border-color: var(--w5-accent); }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bg-page); opacity: 0.3; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--bg-page); }
+
+        @media (max-width: 1400px) {
+            .app-container {
+                grid-template-columns: 240px 1fr;
+            }
+            .sidebar-right { display: none; }
+        }
     </style>
 </head>
 <body>
     <div id="app"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useMemo, useRef } = React;
+        const { useState, useEffect, useMemo } = React;
 
         const App = () => {
             const [habits, setHabits] = useState(() => JSON.parse(localStorage.getItem('hf_habits')) || [
-                { id: '1', name: 'Read 1 Hour', goal: 80 },
-                { id: '2', name: 'Stop Doomscrolling', goal: 80 },
-                { id: '3', name: 'Workout', goal: 80 },
-                { id: '4', name: 'Eat Clean', goal: 80 },
-                { id: '5', name: 'Go Out in Nature', goal: 80 },
-                { id: '6', name: 'Wake Up Early', goal: 80 },
-                { id: '7', name: 'Drink 3L Water', goal: 80 },
-                { id: '8', name: 'Learn Spanish', goal: 80 }
+                { id: '1', name: 'Deep Work Session', goal: 80 },
+                { id: '2', name: 'Digital Detox', goal: 85 },
+                { id: '3', name: 'Physical Training', goal: 75 },
+                { id: '4', name: 'Clean Nutrition', goal: 90 },
+                { id: '5', name: 'Nature Walk', goal: 60 },
+                { id: '6', name: 'Sunrise Routine', goal: 80 },
+                { id: '7', name: 'Hydration Goal', goal: 100 },
+                { id: '8', name: 'Strategic Planning', goal: 70 }
             ]);
             const [logs, setLogs] = useState(() => JSON.parse(localStorage.getItem('hf_logs')) || {});
-            const [activeDate, setActiveDate] = useState(new Date(2026, 0, 1)); // January 2026
+            const [activeDate] = useState(new Date(2026, 0, 1));
 
             useEffect(() => {
                 localStorage.setItem('hf_habits', JSON.stringify(habits));
@@ -320,262 +370,175 @@
 
             const daysInMonth = new Date(activeDate.getFullYear(), activeDate.getMonth() + 1, 0).getDate();
             const monthName = activeDate.toLocaleString('default', { month: 'long' });
-            
-            const getDayOfWeek = (day) => {
-                const date = new Date(activeDate.getFullYear(), activeDate.getMonth(), day);
-                return date.toLocaleString('default', { weekday: 'narrow' });
-            };
 
-            const getWeekNum = (day) => {
-                const date = new Date(activeDate.getFullYear(), activeDate.getMonth(), day);
-                const startOfMonth = new Date(activeDate.getFullYear(), activeDate.getMonth(), 1);
-                const dayOffset = startOfMonth.getDay(); 
-                return Math.floor((day + dayOffset - 1) / 7) + 1;
-            };
-
-            const toggleLog = (habitId, day) => {
-                const dateKey = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${day}`;
-                const newLogs = { ...logs };
-                if (!newLogs[dateKey]) newLogs[dateKey] = {};
-                newLogs[dateKey][habitId] = !newLogs[dateKey][habitId];
-                setLogs(newLogs);
-            };
-
-            // Analytics Calculations
             const stats = useMemo(() => {
                 const dayStats = Array.from({ length: daysInMonth }, (_, i) => {
-                    const day = i + 1;
-                    const dateKey = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${day}`;
-                    const completed = Object.values(logs[dateKey] || {}).filter(Boolean).length;
-                    return (completed / (habits.length || 1)) * 100;
-                });
-
-                const weekStats = [1, 2, 3, 4, 5].map(w => {
-                    let done = 0;
-                    let total = 0;
-                    for (let d = 1; d <= daysInMonth; d++) {
-                        if (getWeekNum(d) === w) {
-                            const dateKey = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${d}`;
-                            done += Object.values(logs[dateKey] || {}).filter(Boolean).length;
-                            total += habits.length;
-                        }
-                    }
-                    const pct = total > 0 ? (done / total) * 100 : 0;
-                    // Mock day bars for the week
-                    const bars = Array.from({length: 7}, (_, i) => {
-                        return Math.random() * 80 + 20; // Visual placeholder
-                    });
-                    return { pct: pct.toFixed(1), bars };
+                    const dateKey = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${i + 1}`;
+                    return (Object.values(logs[dateKey] || {}).filter(Boolean).length / (habits.length || 1)) * 100;
                 });
 
                 const habitProgress = habits.map(h => {
-                    let done = 0;
-                    let streak = 0;
-                    let maxStreak = 0;
+                    let done = 0, streak = 0, maxStreak = 0;
                     for(let d=1; d<=daysInMonth; d++) {
-                        const dateKey = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${d}`;
-                        if(logs[dateKey]?.[h.id]) {
-                            done++;
-                            streak++;
-                            if(streak > maxStreak) maxStreak = streak;
-                        } else {
-                            streak = 0;
-                        }
+                        const key = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${d}`;
+                        if(logs[key]?.[h.id]) { done++; streak++; maxStreak = Math.max(maxStreak, streak); }
+                        else streak = 0;
                     }
                     return { ...h, done, pct: Math.round((done/daysInMonth)*100), maxStreak };
                 });
 
-                const totalCompleted = habitProgress.reduce((acc, curr) => acc + curr.done, 0);
-                const totalPossible = habits.length * daysInMonth;
+                return { dayStats, habitProgress, 
+                         total: habitProgress.reduce((a,b) => a + b.done, 0),
+                         possible: habits.length * daysInMonth };
+            }, [habits, logs, daysInMonth]);
 
-                return { dayStats, weekStats, habitProgress, totalCompleted, totalPossible };
-            }, [habits, logs, daysInMonth, activeDate]);
+            const toggle = (id, day) => {
+                const key = `${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${day}`;
+                const next = { ...logs };
+                if (!next[key]) next[key] = {};
+                next[key][id] = !next[key][id];
+                setLogs(next);
+            };
 
-            const Donut = ({ percent, size = 80, color = "var(--accent)", label }) => {
-                const stroke = 6;
-                const radius = (size - stroke) / 2;
-                const circum = radius * 2 * Math.PI;
-                const offset = circum - (percent / 100) * circum;
-                
+            const Donut = ({ pct, size = 60, color = "var(--bg-page)" }) => {
+                const r = (size - 6) / 2, c = 2 * Math.PI * r;
                 return (
-                    <div style={{ position: 'relative', width: size, height: size, margin: '0 auto' }}>
+                    <div style={{ position: 'relative', width: size, height: size }}>
                         <svg width={size} height={size}>
-                            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke="var(--border)" strokeWidth={stroke} />
-                            <circle cx={size/2} cy={size/2} r={radius} fill="none" stroke={color} strokeWidth={stroke} 
-                                    strokeDasharray={circum} strokeDashoffset={offset} strokeLinecap="round"
-                                    transform={`rotate(-90 ${size/2} ${size/2})`} style={{ transition: 'stroke-dashoffset 0.5s ease' }} />
+                            <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(48, 54, 79, 0.1)" strokeWidth="4" />
+                            <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="4" 
+                                    strokeDasharray={c} strokeDashoffset={c - (pct/100)*c} strokeLinecap="round"
+                                    transform={`rotate(-90 ${size/2} ${size/2})`} style={{ transition: 'all 0.6s ease' }} />
                         </svg>
-                        <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ fontSize: size * 0.2, fontWeight: 700 }}>{percent}%</div>
-                            {label && <div className="mono" style={{ fontSize: '8px', opacity: 0.5 }}>{label}</div>}
-                        </div>
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>{Math.round(pct)}%</div>
                     </div>
                 );
             };
 
             return (
                 <div className="app-container">
-                    {/* LEFT SIDEBAR */}
-                    <div className="sidebar-left">
+                    <aside className="sidebar-left">
                         <div className="month-header">
+                            <div className="mono" style={{ color: 'var(--accent)', letterSpacing: '0.3em' }}>{activeDate.getFullYear()}</div>
                             <h1>{monthName}</h1>
-                            <div className="mono" style={{letterSpacing: '0.2em', marginTop: '0.5rem', fontWeight: 600}}>HABIT TRACKER</div>
                         </div>
-
-                        <div className="panel-card" style={{padding: '0', border: 'none', borderRadius: 0}}>
-                            <div style={{display: 'flex', gap: '2px'}}>
-                                <div className="bg-w1" style={{flex: 1, padding: '0.5rem', textAlign: 'center'}}>
-                                    <div className="mono" style={{fontSize: '0.6rem'}}>MONTH</div>
-                                    <div style={{fontSize: '0.8rem', fontWeight: 600}}>{monthName}</div>
+                        <div className="premium-card quote-card">
+                            <div className="mono" style={{ fontSize: '0.7rem', color: 'var(--bg-page)', marginBottom: '1rem', opacity: 0.6 }}>PHILOSOPHY</div>
+                            <h2>TRUST<br/>THE<br/>PROCESS</h2>
+                            <p style={{ fontStyle: 'italic', fontSize: '0.9rem', color: 'var(--bg-page)', opacity: 0.8 }}>"Consistency is the currency of excellence."</p>
+                        </div>
+                        <div className="premium-card">
+                            <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Monthly Snapshot</h3>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <div className="mono" style={{ fontSize: '0.65rem', opacity: 0.6 }}>SUCCESS RATE</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 600 }}>{Math.round((stats.total/stats.possible)*100)}%</div>
                                 </div>
-                                <div className="bg-w4" style={{flex: 1, padding: '0.5rem', textAlign: 'center'}}>
-                                    <div className="mono" style={{fontSize: '0.6rem'}}>YEAR</div>
-                                    <div style={{fontSize: '0.8rem', fontWeight: 600}}>{activeDate.getFullYear()}</div>
-                                </div>
+                                <Donut pct={(stats.total/stats.possible)*100} size={50} />
                             </div>
                         </div>
+                    </aside>
 
-                        <div className="quote-card">
-                            <h2 style={{ letterSpacing: '-0.05em' }}>trust<br/>the<br/>process</h2>
-                            <div style={{marginTop: '2rem', textAlign: 'left', fontStyle: 'italic', fontSize: '0.9rem'}}>
-                                <div className="mono" style={{fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.5rem'}}>I am ...</div>
-                                <div style={{ borderBottom: '1px solid var(--border)', paddingBottom: '4px' }}>Focused, intentional, and ready for the month ahead.</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* MAIN CONTENT */}
-                    <div className="main-content">
+                    <main className="main-content">
                         <div className="top-stats-row">
                             <div className="area-chart-container">
                                 <svg viewBox="0 0 100 20" preserveAspectRatio="none" style={{width: '100%', height: '100%'}}>
-                                    <path 
-                                        d={`M 0 20 ${stats.dayStats.map((val, i) => `L ${(i / (daysInMonth - 1)) * 100} ${18 - (val / 7)}`).join(' ')} L 100 20 Z`}
-                                        fill="var(--accent)" fillOpacity="0.2"
-                                    />
-                                    <path 
-                                        d={`M 0 20 ${stats.dayStats.map((val, i) => `L ${(i / (daysInMonth - 1)) * 100} ${18 - (val / 7)}`).join(' ')}`}
-                                        fill="none" stroke="var(--accent)" strokeWidth="0.3"
-                                    />
+                                    <path d={`M 0 20 ${stats.dayStats.map((v, i) => `L ${(i/(daysInMonth-1))*100} ${18-(v/6)}`).join(' ')} L 100 20 Z`} fill="var(--bg-page)" fillOpacity="0.15" />
+                                    <path d={`M 0 20 ${stats.dayStats.map((v, i) => `L ${(i/(daysInMonth-1))*100} ${18-(v/6)}`).join(' ')}`} fill="none" stroke="var(--bg-page)" strokeWidth="0.2" />
                                 </svg>
                             </div>
-                            <div className="circular-stats-group">
-                                <div className="stat-circle-card bg-w2" style={{ width: '160px', border: 'none' }}>
-                                    <div className="mono" style={{fontSize: '0.7rem', marginBottom: '0.5rem'}}>DAILY PROGRESS</div>
-                                    <div style={{ fontSize: '2rem', fontWeight: 400 }}>{Math.round((stats.totalCompleted/stats.totalPossible)*10000)/100}%</div>
-                                </div>
-                                <div className="stat-circle-card bg-w2" style={{ width: '160px', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div className="mono" style={{fontSize: '0.7rem'}}>HABITS</div>
-                                    <Donut percent={Math.round((stats.totalCompleted/stats.totalPossible)*100)} size={70} color="var(--accent)" />
-                                    <div className="mono" style={{ fontSize: '0.7rem', marginTop: '4px' }}>{stats.totalCompleted} / {stats.totalPossible}</div>
-                                </div>
+                            <div className="stat-circle-card">
+                                <div className="mono" style={{ fontSize: '0.65rem', color: 'var(--bg-page)', marginBottom: '0.5rem', opacity: 0.6 }}>COMPLETED</div>
+                                <div style={{ fontSize: '2.5rem', fontWeight: 400 }}>{stats.total}</div>
+                                <div className="mono" style={{ fontSize: '0.65rem', opacity: 0.5 }}>RITUALS</div>
                             </div>
                         </div>
 
                         <div className="weekly-summary">
-                            {[1, 2, 3, 4, 5].map((w, idx) => (
-                                <div key={w} className={`week-card`}>
-                                    <div className="mono" style={{fontSize: '0.7rem', opacity: 0.6}}>week {w}</div>
+                            {[1,2,3,4,5].map(w => (
+                                <div key={w} className="week-card">
+                                    <div className="mono" style={{ fontSize: '0.65rem', opacity: 0.5 }}>WEEK {w}</div>
                                     <div className="week-bar-chart">
-                                        {stats.weekStats[idx].bars.map((h, i) => (
-                                            <div key={i} className="week-bar" style={{height: `${h}%`, background: `var(--w${w}-accent)`}}></div>
-                                        ))}
+                                        {Array.from({length:7}).map((_,i) => <div key={i} className="week-bar" style={{height:`${Math.random()*100}%`}} />)}
                                     </div>
-                                    <Donut percent={Math.round(stats.weekStats[idx].pct)} size={60} color={`var(--w${w}-accent)`} />
+                                    <Donut pct={70 + Math.random()*20} size={45} />
                                 </div>
                             ))}
                         </div>
 
                         <div className="log-grid-container">
-                            <div className="log-grid" style={{background: 'var(--primary)', padding: '0.5rem 0', color: 'var(--bg-page)'}}>
-                                <div className="log-cell" style={{justifyContent: 'flex-start', paddingLeft: '1rem', fontWeight: 700, borderColor: 'var(--bg-page)'}}>DAILY HABITS</div>
-                                {Array.from({length: daysInMonth}, (_, i) => (
-                                    <div key={i} className="day-header mono" style={{borderColor: 'var(--bg-page)'}}>
-                                        <div style={{fontSize: '0.6rem'}}>{getDayOfWeek(i+1)}</div>
-                                        <div style={{fontSize: '0.8rem'}}>{i+1}</div>
+                            <div className="log-scroll-area">
+                                <div className="log-grid log-header-row">
+                                    <div className="log-cell habit-name-cell">RITUAL MATRIX</div>
+                                    {Array.from({length: daysInMonth}, (_, i) => (
+                                        <div key={i} className="log-cell day-header mono">
+                                            {i+1}
+                                        </div>
+                                    ))}
+                                </div>
+                                {habits.map((h, hIdx) => (
+                                    <div key={h.id} className="log-grid">
+                                        <div className="log-cell habit-name-cell">
+                                            <span style={{ fontSize: '0.7rem', color: 'var(--bg-page)', opacity: 0.4, marginRight: '0.75rem' }}>0{hIdx+1}</span>
+                                            {h.name}
+                                        </div>
+                                        {Array.from({length: daysInMonth}, (_, i) => (
+                                            <div key={i} className="log-cell">
+                                                <div className={`check-wrapper ${logs[`${activeDate.getFullYear()}-${activeDate.getMonth()+1}-${i+1}`]?.[h.id] ? 'active' : ''}`}
+                                                     onClick={() => toggle(h.id, i+1)} />
+                                            </div>
+                                        ))}
                                     </div>
                                 ))}
                             </div>
-                            {habits.map((h, hIdx) => (
-                                <div key={h.id} className="log-grid">
-                                    <div className="log-cell" style={{justifyContent: 'flex-start', paddingLeft: '1rem', borderRight: '2px solid var(--border)'}}>
-                                        <span style={{fontSize: '0.7rem', marginRight: '0.5rem', opacity: 0.4}}>{hIdx + 1}</span>
-                                        <span style={{fontSize: '0.8rem'}}>{h.name}</span>
-                                    </div>
-                                    {Array.from({length: daysInMonth}, (_, i) => {
-                                        const day = i + 1;
-                                        const weekNum = getWeekNum(day);
-                                        const isChecked = logs[`${activeDate.getFullYear()}-${activeDate.getMonth() + 1}-${day}`]?.[h.id];
-                                        return (
-                                            <div key={i} className={`log-cell bg-w${weekNum}`}>
-                                                <div 
-                                                    className={`checkbox ${isChecked ? 'checked' : ''} accent-w${weekNum}`}
-                                                    onClick={() => toggleLog(h.id, day)}
-                                                />
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            ))}
                             <div className="btn-add mono" onClick={() => {
-                                const name = prompt("Habit Name?");
-                                if(name) setHabits([...habits, { id: Date.now().toString(), name, goal: 80 }]);
-                            }}>+ ADD NEW HABIT</div>
+                                const n = prompt("Habit Name?");
+                                if(n) setHabits([...habits, { id: Date.now().toString(), name: n, goal: 80 }]);
+                            }}>+ INTEGRATE NEW RITUAL</div>
                         </div>
-                    </div>
+                    </main>
 
-                    {/* RIGHT SIDEBAR */}
-                    <div className="sidebar-right">
-                        <div className="panel-card">
-                            <div className="panel-title">TOP 10 HABITS</div>
+                    <aside className="sidebar-right">
+                        <div className="premium-card">
+                            <div className="panel-title">Consistency Leaderboard</div>
                             <table className="data-table">
                                 <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>daily habit</th>
-                                        <th style={{textAlign: 'right'}}>progress</th>
-                                    </tr>
+                                    <tr><th>Habit</th><th style={{textAlign:'right'}}>Progress</th></tr>
                                 </thead>
                                 <tbody>
-                                    {stats.habitProgress.sort((a,b) => b.pct - a.pct).slice(0, 10).map((h, i) => (
+                                    {stats.habitProgress.sort((a,b)=>b.pct-a.pct).slice(0,5).map(h => (
                                         <tr key={h.id}>
-                                            <td>{i+1}</td>
                                             <td>{h.name}</td>
-                                            <td style={{textAlign: 'right'}}>{h.pct}%</td>
+                                            <td style={{textAlign:'right'}}>
+                                                <div style={{display:'flex', alignItems:'center', gap:'0.5rem', justifyContent:'flex-end'}}>
+                                                    <div className="progress-track"><div className="progress-fill" style={{width:`${h.pct}%`}} /></div>
+                                                    <span className="mono">{h.pct}%</span>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
 
-                        <div className="panel-card">
-                            <div className="panel-title">DAILY PROGRESS</div>
+                        <div className="premium-card">
+                            <div className="panel-title">Streak Intel</div>
                             <table className="data-table">
                                 <thead>
-                                    <tr>
-                                        <th>goal</th>
-                                        <th>percentage</th>
-                                        <th>count</th>
-                                        <th>streak</th>
-                                    </tr>
+                                    <tr><th>Target</th><th>Streak</th><th style={{textAlign:'right'}}>Count</th></tr>
                                 </thead>
                                 <tbody>
                                     {stats.habitProgress.map(h => (
                                         <tr key={h.id}>
-                                            <td>{h.goal}%</td>
-                                            <td>
-                                                <div className="progress-mini-bar">
-                                                    <div className="progress-mini-fill" style={{width: `${h.pct}%`}}></div>
-                                                </div>
-                                            </td>
-                                            <td>{h.done}/{daysInMonth}</td>
-                                            <td>{h.maxStreak}</td>
+                                            <td className="mono" style={{fontSize:'0.7rem'}}>{h.goal}%</td>
+                                            <td><span style={{color:'var(--bg-page)', fontWeight:700}}>{h.maxStreak}d</span></td>
+                                            <td style={{textAlign:'right'}}>{h.done}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </aside>
                 </div>
             );
         };
