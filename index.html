@@ -132,14 +132,18 @@
         main {
             flex: 1;
             overflow-y: auto;
-            padding-bottom: 80px; /* Space for FAB and Tab bar */
+            padding-bottom: 100px; /* Space for FAB and Tab bar */
             position: relative;
+            scrollbar-width: none; /* Hide scrollbar for Chrome/Safari */
         }
+        main::-webkit-scrollbar { display: none; }
 
         .view {
             display: none;
-            padding: 20px;
-            animation: fadeSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 24px;
+            max-width: 600px;
+            margin: 0 auto;
+            animation: fadeSlideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .view.active {
@@ -147,7 +151,7 @@
         }
 
         @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(12px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -157,10 +161,10 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 64px;
+            height: 72px;
             background: var(--tab-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
@@ -174,18 +178,21 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
+            gap: 6px;
             color: var(--text-muted);
             flex: 1;
             height: 100%;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
         }
 
+        .tab-item i { transition: transform 0.3s; }
+        .tab-item:active i { transform: scale(0.8); }
+
         .tab-item span {
-            font-size: 10px;
-            font-weight: 500;
+            font-size: 11px;
+            font-weight: 600;
         }
 
         .tab-item.active {
@@ -198,348 +205,56 @@
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 32px;
-            height: 2px;
+            width: 40px;
+            height: 3px;
             background-color: var(--accent);
-            border-radius: 0 0 2px 2px;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 8px var(--accent-glow);
         }
 
-        /* Today View */
-        .today-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-        }
-
-        .date-display {
-            display: flex;
-            align-items: baseline;
-            gap: 12px;
-        }
-
-        .date-day {
-            font-size: 72px;
-            line-height: 1;
-            color: var(--text-primary);
-        }
-
-        .date-meta {
-            display: flex;
-            flex-direction: column;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        /* Progress Ring */
-        .progress-ring-container {
-            position: relative;
-            width: 120px;
-            height: 120px;
-        }
-
-        .progress-ring {
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-bg {
-            fill: none;
-            stroke: var(--border);
-            stroke-width: 8;
-        }
-
-        .progress-ring-fill {
-            fill: none;
-            stroke: var(--accent);
-            stroke-width: 8;
-            stroke-linecap: round;
-            transition: stroke-dashoffset 1.2s ease-out;
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: 700;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .quote-container {
-            margin-bottom: 32px;
-            min-height: 48px;
-            font-style: italic;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        /* Habit List & Cards */
+        /* Today View & Cards */
         .habit-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 16px;
         }
 
         .habit-card {
             background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 16px;
+            border-radius: 20px;
+            padding: 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--card-color, var(--accent));
-            transition: all 0.25s ease;
-            animation: staggerFadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+            border-left: 6px solid var(--card-color, var(--accent));
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: staggerFadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
             position: relative;
             overflow: hidden;
             user-select: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+
+        .habit-card:active { transform: scale(0.98); }
 
         .habit-card.completed {
-            opacity: 0.5;
+            opacity: 0.6;
             order: 999;
-        }
-
-        .habit-card.completed .habit-name {
-            text-decoration: line-through;
-            text-decoration-color: var(--text-muted);
-            text-decoration-thickness: 2px;
-        }
-
-        @keyframes staggerFadeIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .habit-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex: 1;
-        }
-
-        .habit-icon {
-            color: var(--card-color, var(--text-primary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px; height: 40px;
-            background: var(--bg-elevated);
-            border-radius: 8px;
-        }
-
-        .habit-details {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .habit-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-primary);
-            transition: color 0.3s;
-        }
-
-        .habit-meta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .mini-heatmap {
-            display: flex;
-            gap: 3px;
-        }
-
-        .mini-cell {
-            width: 8px;
-            height: 8px;
-            border-radius: 2px;
-            background: var(--bg-elevated);
-        }
-
-        .mini-cell.done {
-            background: var(--card-color, var(--accent));
-            opacity: 0.8;
-        }
-
-        /* Checkbox & Particles */
-        .checkbox-container {
-            position: relative;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .custom-checkbox {
-            width: 28px;
-            height: 28px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-        }
-
-        .habit-card.completed .custom-checkbox {
-            background: var(--card-color, var(--accent));
-            border-color: var(--card-color, var(--accent));
-        }
-
-        .custom-checkbox svg {
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.2s 0.1s;
-            stroke: var(--bg-primary);
-        }
-
-        .habit-card.completed .custom-checkbox svg {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--card-color, var(--accent));
-            top: 50%;
-            left: 50%;
-            margin-top: -3px;
-            margin-left: -3px;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        @keyframes burst0 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(0, -24px) scale(0); opacity:0; } }
-        @keyframes burst1 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(21px, -12px) scale(0); opacity:0; } }
-        @keyframes burst2 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(21px, 12px) scale(0); opacity:0; } }
-        @keyframes burst3 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(0, 24px) scale(0); opacity:0; } }
-        @keyframes burst4 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-21px, 12px) scale(0); opacity:0; } }
-        @keyframes burst5 { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-21px, -12px) scale(0); opacity:0; } }
-
-        /* Delete actions */
-        .habit-card.deleting {
-            background: var(--danger);
-            transform: scale(0.95);
+            filter: grayscale(0.3);
         }
         
-        .delete-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--danger);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding: 0 20px;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s;
-            z-index: 10;
-        }
-        .habit-card.show-delete .delete-overlay {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* FAB */
-        .fab {
-            position: fixed;
-            bottom: 84px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            background: var(--accent);
-            color: #000;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px var(--accent-glow);
-            cursor: pointer;
-            z-index: 90;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
-            outline: none;
-        }
-
-        .fab:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px var(--accent-glow);
-        }
-        
-        .fab.rotated svg {
-            transform: rotate(45deg);
-            transition: transform 0.3s;
-        }
-
-        .fab svg {
-            transition: transform 0.3s;
-        }
-
-        /* Empty State */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 50vh;
-            color: var(--text-muted);
-            text-align: center;
-            gap: 16px;
-        }
-
-        .empty-state svg {
-            width: 120px;
-            height: 120px;
-            opacity: 0.5;
-            margin-bottom: 16px;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Bottom Sheet */
+        /* Bottom Sheet & Modals */
         .sheet-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: var(--backdrop);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 200;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s;
         }
 
         .sheet-overlay.active {
@@ -551,402 +266,27 @@
             position: fixed;
             bottom: 0; left: 0; width: 100%;
             background: var(--bg-card);
-            border-radius: 24px 24px 0 0;
-            padding: 24px;
+            border-radius: 32px 32px 0 0;
+            padding: 32px;
             z-index: 201;
             transform: translateY(100%);
-            transition: transform 0.32s cubic-bezier(0.32,0.72,0,1);
+            transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
             max-height: 90vh;
             overflow-y: auto;
             border-top: 1px solid var(--border);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
         }
 
         .sheet-overlay.active + .bottom-sheet {
             transform: translateY(0);
         }
 
-        .sheet-handle {
-            width: 40px;
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            margin: 0 auto 24px;
-        }
-
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .input-huge {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid var(--border);
-            color: var(--text-primary);
-            font-size: 24px;
-            font-family: 'Playfair Display', serif;
-            padding: 8px 0;
-            transition: border-color 0.3s;
-            outline: none;
-        }
-
-        .input-huge:focus {
-            border-color: var(--accent);
-        }
-
-        .icon-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .icon-opt {
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--bg-elevated);
-            border-radius: 12px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--text-muted);
-        }
-
-        .icon-opt.selected {
-            border-color: var(--accent);
-            color: var(--accent);
-            transform: scale(1.1);
-        }
-
-        .color-row {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-
-        .color-swatch {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            flex-shrink: 0;
-            border: 2px solid transparent;
-            transition: transform 0.2s;
-        }
-
-        .color-swatch.selected {
-            border-color: var(--text-primary);
-            transform: scale(1.15);
-        }
-
-        .chip-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .chip {
-            padding: 8px 16px;
-            background: var(--bg-elevated);
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s;
-            color: var(--text-muted);
-        }
-
-        .chip.selected {
-            background: var(--accent-glow);
-            color: var(--accent);
-            border-color: var(--accent);
-        }
-
-        textarea.input-styled {
-            width: 100%;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            border-radius: 12px;
-            padding: 12px;
-            font-family: inherit;
-            resize: none;
-            height: 80px;
-            outline: none;
-        }
-
-        textarea.input-styled:focus {
-            border-color: var(--accent);
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 16px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:active {
-            opacity: 0.8;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0,0,0,0.3);
-            border-top-color: #000;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            display: none;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Stats Tab */
-        .stats-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .s-tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px 0;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .s-tab.active {
-            color: var(--text-primary);
-        }
-
-        .s-indicator {
-            position: absolute;
-            bottom: 0;
-            height: 2px;
-            background: var(--accent);
-            transition: left 0.3s ease, width 0.3s ease;
-        }
-
-        .stats-card-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 16px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            color: var(--accent);
-            margin-bottom: 4px;
-        }
-
-        .stat-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        /* Heatmap Calendar */
-        .heatmap-container {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            border: 1px solid var(--border);
-            margin-bottom: 32px;
-        }
-        
-        .heatmap-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 16px;
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-
-        .cal-day-label {
-            text-align: center;
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .cal-cell {
-            aspect-ratio: 1;
-            border-radius: 6px;
-            background: var(--bg-elevated);
-            transition: all 0.2s;
-            position: relative;
-            cursor: default;
-        }
-
-        /* SVG Chart */
-        .chart-container {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            border: 1px solid var(--border);
-            height: 220px;
-            position: relative;
-        }
-
-        .chart-svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        .chart-path {
-            fill: none;
-            stroke: var(--accent);
-            stroke-width: 3;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            transition: stroke-dashoffset 1.5s ease-in-out;
-        }
-        
-        .chart-area {
-            fill: var(--accent-glow);
-            opacity: 0;
-            transition: opacity 1s 1s ease;
-        }
-        .chart-area.show {
-            opacity: 1;
-        }
-
-        /* Settings */
-        .settings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .setting-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 16px 20px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .setting-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .setting-icon {
-            color: var(--text-muted);
-        }
-
-        /* Toggle */
-        .toggle-switch {
-            width: 48px;
-            height: 24px;
-            background: var(--bg-elevated);
-            border-radius: 12px;
-            position: relative;
-            cursor: pointer;
-            border: 1px solid var(--border);
-            transition: background 0.3s;
-        }
-
-        .toggle-switch.on {
-            background: var(--success);
-        }
-
-        .toggle-knob {
-            width: 18px;
-            height: 18px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .toggle-switch.on .toggle-knob {
-            transform: translateX(24px);
-        }
-
-        .btn-danger {
-            background: rgba(224, 90, 90, 0.1);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-            padding: 12px 20px;
-            border-radius: 8px;
-            width: 100%;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .btn-danger:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        /* Responsive */
+        /* Responsive Breakpoints */
         @media (min-width: 768px) {
+            .view { max-width: 900px; }
             .habit-list {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-            }
-            .stats-card-row {
+                grid-template-columns: repeat(2, 1fr);
                 gap: 20px;
             }
         }
@@ -954,53 +294,135 @@
         @media (min-width: 1024px) {
             .app-shell {
                 flex-direction: row;
-                align-items: flex-start;
-                justify-content: center;
-                gap: 40px;
-                padding: 40px;
+                max-width: 100%;
+                margin: 0;
+                height: 100vh;
+                padding: 0;
+                gap: 0;
             }
-            header {
-                display: none;
-            }
-            main {
-                max-width: 800px;
-                background: var(--bg-card);
-                border: 1px solid var(--border);
-                border-radius: 24px;
-                height: 90vh;
-                box-shadow: var(--shadow-lg);
-                padding: 40px;
-            }
+            
+            header { display: none; }
+            
+            /* Sidebar Dashboard */
             .tab-bar {
-                position: static;
+                position: relative;
                 flex-direction: column;
-                width: 80px;
-                height: auto;
-                background: transparent;
-                border: none;
-                gap: 32px;
+                width: 280px;
+                height: 100%;
+                background: var(--bg-card);
+                border-top: none;
+                border-right: 1px solid var(--border);
+                backdrop-filter: none;
+                padding: 40px 24px;
+                justify-content: flex-start;
+                gap: 8px;
+            }
+
+            .tab-bar::before {
+                content: 'HabitFlow';
+                font-family: 'Playfair Display', serif;
+                font-size: 28px;
+                font-weight: 700;
+                margin-bottom: 40px;
+                padding-left: 16px;
+                color: var(--text-primary);
+                display: block;
+            }
+
+            .tab-item {
+                flex: 0;
+                height: 56px;
+                width: 100%;
+                border-radius: 12px;
+                flex-direction: row;
+                justify-content: flex-start;
+                padding: 0 20px;
+                gap: 16px;
+            }
+
+            .tab-item span { font-size: 15px; }
+            .tab-item i { width: 20px; }
+
+            .tab-item.active {
+                background: var(--bg-elevated);
+                color: var(--accent);
+            }
+
+            .tab-item.active::after {
+                width: 4px;
+                height: 24px;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                border-radius: 0 4px 4px 0;
+            }
+
+            /* Main Expanded Area */
+            main {
+                padding: 60px;
+                max-width: 100%;
+                background: var(--bg-primary);
+            }
+
+            .view { 
+                margin: 0; 
+                max-width: 1200px; 
                 padding: 0;
             }
-            .tab-item {
-                height: auto;
+
+            .today-grid {
+                display: grid;
+                grid-template-columns: 1fr 320px;
+                gap: 60px;
+                align-items: start;
             }
-            .tab-item.active::after {
-                width: 2px;
-                height: 32px;
-                top: 50%; left: -16px;
-                transform: translateY(-50%);
-                border-radius: 2px;
+
+            .habit-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
             }
+
+            .stats-container-grid {
+                display: grid;
+                grid-template-columns: 1fr 400px;
+                gap: 40px;
+            }
+
             .fab {
-                position: absolute;
-                bottom: 40px;
-                right: 40px;
+                bottom: 60px;
+                right: 60px;
+                width: 64px;
+                height: 64px;
             }
+
             .bottom-sheet {
-                width: 600px;
+                width: 480px;
                 left: 50%;
-                margin-left: -300px;
-                border-radius: 24px 24px 0 0;
+                top: 50%;
+                bottom: auto;
+                transform: translate(-50%, calc(-50% + 50px)) scale(0.9);
+                border-radius: 32px;
+                opacity: 0;
+                pointer-events: none;
+                visibility: hidden;
+                transition: all 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+            }
+
+            .sheet-overlay.active + .bottom-sheet {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+                pointer-events: auto;
+                visibility: visible;
+            }
+
+            .desktop-only-flex {
+                display: flex !important;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .habit-list {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -1019,30 +441,56 @@
             </div>
         </header>
 
+        <nav class="tab-bar">
+            <div class="tab-item active" onclick="switchTab('today')" data-target="today">
+                <i data-lucide="sun"></i><span>Today</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('habits')" data-target="habits">
+                <i data-lucide="list"></i><span>Habits</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('stats')" data-target="stats">
+                <i data-lucide="bar-chart-2"></i><span>Stats</span>
+            </div>
+            <div class="tab-item" onclick="switchTab('settings')" data-target="settings">
+                <i data-lucide="settings"></i><span>Settings</span>
+            </div>
+            
+            <div class="header-center desktop-only-flex" style="margin-top: auto; padding: 24px; background: var(--bg-elevated); border-radius: 16px; justify-content: center; gap: 12px;" id="desktop-streak-card">
+                <i data-lucide="flame" class="flame-icon" width="24" height="24"></i>
+                <span style="font-size: 20px; font-weight: 700;" id="sidebar-streak">0</span>
+            </div>
+        </nav>
+
         <main id="main-content">
             <!-- TODAY VIEW -->
             <div id="view-today" class="view active">
-                <div class="today-header">
-                    <div class="date-display">
-                        <div class="date-day playfair" id="today-day">14</div>
-                        <div class="date-meta">
-                            <span id="today-month">APR</span>
-                            <span id="today-weekday">MONDAY</span>
+                <div class="today-grid">
+                    <div class="today-main">
+                        <div class="today-header" style="margin-bottom: 40px;">
+                            <div class="date-display">
+                                <div class="date-day playfair" id="today-day">14</div>
+                                <div class="date-meta">
+                                    <span id="today-month">APR</span>
+                                    <span id="today-weekday">MONDAY</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="quote-container" id="quote-text" style="font-size: 18px; margin-bottom: 48px;"></div>
+                        <div class="habit-list" id="today-habit-list"></div>
+                    </div>
+                    
+                    <div class="today-sidebar">
+                        <div class="premium-card" style="padding: 32px; text-align: center; background: var(--bg-card); border-radius: 32px; position: sticky; top: 0; color: var(--text-primary); border: 1px solid var(--border);">
+                            <div class="progress-ring-container" style="margin: 0 auto 24px;">
+                                <svg class="progress-ring" width="160" height="160">
+                                    <circle class="progress-ring-bg" cx="80" cy="80" r="72" stroke-width="10"></circle>
+                                    <circle class="progress-ring-fill" id="today-progress-circle" cx="80" cy="80" r="72" stroke-width="10"></circle>
+                                </svg>
+                                <div class="progress-text" id="today-progress-text" style="font-size: 32px;">0%</div>
+                            </div>
+                            <div class="stat-label" style="font-size: 14px; color: var(--text-muted);">Daily Completion</div>
                         </div>
                     </div>
-                    <div class="progress-ring-container">
-                        <svg class="progress-ring" width="120" height="120">
-                            <circle class="progress-ring-bg" cx="60" cy="60" r="52"></circle>
-                            <circle class="progress-ring-fill" id="today-progress-circle" cx="60" cy="60" r="52"></circle>
-                        </svg>
-                        <div class="progress-text" id="today-progress-text">0%</div>
-                    </div>
-                </div>
-
-                <div class="quote-container" id="quote-text"></div>
-
-                <div class="habit-list" id="today-habit-list">
-                    <!-- Rendered via JS -->
                 </div>
             </div>
 
@@ -1063,38 +511,43 @@
                     <div class="s-indicator" id="stat-indicator" style="width: 33.33%; left: 0;"></div>
                 </div>
 
-                <div class="stats-card-row">
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-best">0</div>
-                        <div class="stat-label">🔥 Best Streak</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-total">0</div>
-                        <div class="stat-label">✅ Total Done</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="stat-active">0</div>
-                        <div class="stat-label">📅 Active Days</div>
-                    </div>
-                </div>
+                <div class="stats-container-grid">
+                    <div class="stats-main-col">
+                        <div class="stats-card-row">
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-best">0</div>
+                                <div class="stat-label">🔥 Best Streak</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-total">0</div>
+                                <div class="stat-label">✅ Total Done</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-value" id="stat-active">0</div>
+                                <div class="stat-label">📅 Active Days</div>
+                            </div>
+                        </div>
 
-                <div class="heatmap-container">
-                    <div class="heatmap-header">
-                        <span id="cal-month-name">April 2024</span>
+                        <h3 style="margin-bottom: 24px; font-size: 18px;">Activity Trends</h3>
+                        <div class="chart-container" style="height: 300px; margin-bottom: 40px;">
+                            <svg class="chart-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
+                                <path id="chart-area" class="chart-area" d="" />
+                                <path id="chart-path" class="chart-path" d="" />
+                            </svg>
+                        </div>
                     </div>
-                    <div class="calendar-grid" id="calendar-grid">
-                        <div class="cal-day-label">S</div><div class="cal-day-label">M</div><div class="cal-day-label">T</div>
-                        <div class="cal-day-label">W</div><div class="cal-day-label">T</div><div class="cal-day-label">F</div><div class="cal-day-label">S</div>
-                        <!-- Cells rendered via JS -->
-                    </div>
-                </div>
 
-                <h3 style="margin-bottom: 16px; font-size: 16px;">Last 30 Days</h3>
-                <div class="chart-container">
-                    <svg class="chart-svg" viewBox="0 0 300 100" preserveAspectRatio="none">
-                        <path id="chart-area" class="chart-area" d="" />
-                        <path id="chart-path" class="chart-path" d="" />
-                    </svg>
+                    <div class="stats-side-col">
+                        <div class="heatmap-container">
+                            <div class="heatmap-header">
+                                <span id="cal-month-name">April 2024</span>
+                            </div>
+                            <div class="calendar-grid" id="calendar-grid">
+                                <div class="cal-day-label">S</div><div class="cal-day-label">M</div><div class="cal-day-label">T</div>
+                                <div class="cal-day-label">W</div><div class="cal-day-label">T</div><div class="cal-day-label">F</div><div class="cal-day-label">S</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1333,7 +786,11 @@
                     break;
                 }
             }
-            document.getElementById('header-streak').innerText = streak;
+            
+            const mobileStreak = document.getElementById('header-streak');
+            const sidebarStreak = document.getElementById('sidebar-streak');
+            if(mobileStreak) mobileStreak.innerText = streak;
+            if(sidebarStreak) sidebarStreak.innerText = streak;
         }
 
         // --- UI UPDATES ---
